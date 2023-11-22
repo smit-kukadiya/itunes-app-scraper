@@ -355,6 +355,26 @@ class AppStoreScraper:
 		data = tree.xpath('//*[@id="charts-content-section"]/ol/li/a/@href')
 		appIDs = [ url.split("/id")[-1] for url in data[:100] ]
 		return appIDs
+	
+	def get_suggestion_from_query(self, query: str, country: str = 'us') -> List[str]:
+		if hasattr(AppStoreMarkets, country):
+			country = getattr(AppStoreMarkets, country)
+
+		url = "https://search.itunes.apple.com/WebObjects/MZSearchHints.woa/wa/hints?clientApplication=Software&term=" + requests.utils.quote(query)
+
+		headers = {
+			'X-Apple-Store-Front': f"{country},29"
+		}
+
+		response = requests.get(url, headers=headers)
+		response.raise_for_status()
+		tree = html.fromstring(response.content)
+		data = tree.xpath('//string/text()')
+		
+		#remove all links from list
+		data = [x for x in data if not x.startswith("https://")]
+
+		return data[1:]
 
 	def _parse_rating(self, text):
 		matches = Regex.STARS.findall(text)
