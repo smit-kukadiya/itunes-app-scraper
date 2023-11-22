@@ -29,10 +29,10 @@ class AppStoreCollections:
 	the various collections displayed in the app store, usually on the front
 	page.
 	"""
-	TOP_MAC = 'topmacapps'
+	TOP_MAC = 'topmacapps' # Not working
 	TOP_FREE_MAC = 'topfreemacapps'
-	TOP_GROSSING_MAC = 'topgrossingmacapps'
-	TOP_PAID_MAC = 'toppaidmacapps'
+	TOP_GROSSING_MAC = 'topgrossingmacapps' # Not working
+	TOP_PAID_MAC = 'toppaidmacapps' # Not working
 	NEW_IOS = 'newapplications'
 	NEW_FREE_IOS = 'newfreeapplications'
 	NEW_PAID_IOS = 'newpaidapplications'
@@ -50,35 +50,40 @@ class AppStoreCategories:
 	Borrowed from https://github.com/facundoolano/app-store-scraper. These are
 	the app's categories.
 	"""
-	BOOKS = 6018
-	BUSINESS = 6000
+	
+	BOOKS = ["books-apps", 6018]
+	BUSINESS = ["business-apps", 6000]
 	CATALOGS = 6022
-	EDUCATION = 6017
-	ENTERTAINMENT = 6016
-	FINANCE = 6015
-	FOOD_AND_DRINK = 6023
-	GAMES = 6014
-	GAMES_ACTION = 7001
-	GAMES_ADVENTURE = 7002
+	DEVELOPER_TOOLS = ["developer-tools-apps", 6026]
+	EDUCATION = ["education-apps", 6017]
+	ENTERTAINMENT = ["entertainment-apps", 6016]
+	FINANCE = ["finance-apps", 6015]
+	FOOD_AND_DRINK = ["food-drink-apps", 6023]
+	GAMES_FREE = ['top-free-games', 6014]
+	GAMES_PAID = ['top-paid-games', 6014]
+	GAMES_ACTION = ["action-games", 7001]
+	GAMES_ADVENTURE = ["adventure-games", 7002]
 	GAMES_ARCADE = 7003
-	GAMES_BOARD = 7004
-	GAMES_CARD = 7005
-	GAMES_CASINO = 7006
+	GAMES_BOARD = ["board-games", 7004]
+	GAMES_CARD = ["card-games", 7005]
+	GAMES_CASINO = ["casino-games", 7006]
+	GAMES_CASUAL = ["casual-games", 7003]
 	GAMES_DICE = 7007
 	GAMES_EDUCATIONAL = 7008
-	GAMES_FAMILY = 7009
-	GAMES_MUSIC = 7011
-	GAMES_PUZZLE = 7012
-	GAMES_RACING = 7013
-	GAMES_ROLE_PLAYING = 7014
-	GAMES_SIMULATION = 7015
-	GAMES_SPORTS = 7016
-	GAMES_STRATEGY = 7017
-	GAMES_TRIVIA = 7018
-	GAMES_WORD = 7019
-	HEALTH_AND_FITNESS = 6013
-	LIFESTYLE = 6012
-	MAGAZINES_AND_NEWSPAPERS = 6021
+	GAMES_FAMILY = ["family-games", 7009]
+	GAMES_MUSIC = ["music-games", 7011]
+	GAMES_PUZZLE = ["puzzle-games", 7012]
+	GAMES_RACING = ["racing-games", 7013]
+	GAMES_ROLE_PLAYING = ["role-playing-games", 7014]
+	GAMES_SIMULATION = ["simulation-games", 7015]
+	GAMES_SPORTS = ["sports-games", 7016]
+	GAMES_STRATEGY = ["strategy-games", 7017]
+	GAMES_TRIVIA = ["trivia-games", 7018]
+	GAMES_WORD = ["word-games", 7019]
+	GRAPHICS_AND_DESIGN = ["graphics-design-apps", 6027]
+	HEALTH_AND_FITNESS = ["health-fitness-apps", 6013]
+	LIFESTYLE = ["lifestyle-apps", 6012]
+	MAGAZINES_AND_NEWSPAPERS = ["magazines-newspapers-apps", 6021]
 	MAGAZINES_ARTS = 13007
 	MAGAZINES_AUTOMOTIVE = 13006
 	MAGAZINES_WEDDINGS = 13008
@@ -107,19 +112,20 @@ class AppStoreCategories:
 	MAGAZINES_TEENS = 13028
 	MAGAZINES_TRAVEL = 13029
 	MAGAZINES_WOMEN = 13030
-	MEDICAL = 6020
-	MUSIC = 6011
-	NAVIGATION = 6010
-	NEWS = 6009
-	PHOTO_AND_VIDEO = 6008
-	PRODUCTIVITY = 6007
-	REFERENCE = 6006
-	SHOPPING = 6024
-	SOCIAL_NETWORKING = 6005
-	SPORTS = 6004
-	TRAVEL = 6003
-	UTILITIES = 6002
-	WEATHER = 6001
+	MEDICAL = ["medical-apps", 6020]
+	MUSIC = ["music-apps", 6011]
+	NAVIGATION = ["navigation-apps", 6010]
+	NEWS = ["news-apps", 6009]
+	PHOTO_AND_VIDEO = ["photo-video-apps", 6008]
+	PRODUCTIVITY = ["productivity-apps", 6007]
+	REFERENCE = ["reference-apps", 6006]
+	SHOPPING = ["shopping-apps", 6024]
+	SOCIAL_NETWORKING = ["social-networking-apps", 6005]
+	SPORTS = ["sports-apps", 6004]
+	TRAVEL = ["travel-apps", 6003]
+	UTILITIES = ["utilities-apps", 6002]
+	WEATHER = ["weather-apps", 6001]
+
 
 class AppStoreMarkets:
 	"""

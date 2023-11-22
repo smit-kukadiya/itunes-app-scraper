@@ -7,6 +7,8 @@ import time
 import re
 import os
 from datetime import datetime
+from typing import List
+from lxml import html
 
 from urllib.parse import quote_plus
 from itunes_app_scraper.util import AppStoreException, AppStoreCollections, AppStoreCategories, AppStoreMarkets, COUNTRIES
@@ -69,8 +71,8 @@ class AppStoreScraper:
 
 		:param str collection:  Collection ID. One of the values in
 		                        `AppStoreCollections`.
-		:param int category:  Category ID. One of the values in
-		                      AppStoreCategories. Can be left empty.
+		!!!DO NOT USE!!! :param int category:  Category ID. One of the values in
+		                      AppStoreCategories. Can be left empty. !!!DO NOT USE!!!
 		:param int num:  Amount of results to return. Defaults to 50.
 		:param str country:  Two-letter country code for the store to search in.
 		                     Defaults to 'nl'.
@@ -324,6 +326,32 @@ class AppStoreScraper:
 		#,print(dataset)
 
 		return dataset
+	
+	def get_app_from_collection_category(collection: str, category: str, device: str = "iphone", country: str = 'us') -> List[str]:
+		"""
+		Get the app IDs from a collection and category
+		:param str collection: the collection to get the apps, "top-free", "top-paid"
+		:param str category: the category to get the apps from AppStoreCategories
+		:param str device: the device to get the apps, "iphone", "ipad
+		:param str country: the country to get the apps, two letter country code
+
+		:returns List[str] appID: a list of app IDs
+		"""
+
+		if hasattr(AppStoreCategories, category):
+			category_data = getattr(AppStoreCategories, category)
+
+		url = f"https://apps.apple.com/{country}/charts/{device}/{category_data[0]}/{category_data[1]}?chart={collection}"
+		
+		options = {
+			'url': url,
+		}
+
+		response = requests.get(**options)
+		tree = html.fromstring(response.content)
+		data = tree.xpath('//*[@id="charts-content-section"]/ol/li/a/@href')
+		appIDs = [ url.split("/id")[-1] for url in data[:100] ]
+		return appIDs
 
 	def _parse_rating(self, text):
 		matches = Regex.STARS.findall(text)
