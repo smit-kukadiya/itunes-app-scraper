@@ -327,7 +327,7 @@ class AppStoreScraper:
 
 		return dataset
 	
-	def get_app_from_collection_category(collection: str, category: str, device: str = "iphone", country: str = 'us') -> List[str]:
+	def get_app_from_collection_category(self, collection: str, category: str, device: str = "iphone", country: str = 'us') -> List[str]:
 		"""
 		Get the app IDs from a collection and category
 		:param str collection: the collection to get the apps, "top-free", "top-paid"
