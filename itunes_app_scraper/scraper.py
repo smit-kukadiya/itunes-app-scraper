@@ -230,6 +230,9 @@ class AppStoreScraper:
 				elif isinstance(app[field], dict):
 					app[field] = ", ".join(["%s star: %s" % (key, value) for key,value in app[field].items()])
 
+		app['title'] = app['trackCensoredName']
+		app['developer'] = app['sellerName']
+
 		return app
 
 	def get_multiple_app_details(self, app_ids, country="nl", lang="", add_ratings=False, sleep=1, force=False):
