@@ -27,7 +27,9 @@ class AppStoreScraper:
 	can be found at https://github.com/facundoolano/app-store-scraper.
 	"""
 
-	def get_app_ids_for_query(self, term, num=50, page=1, country="nl", lang="nl"):
+	def get_app_ids_for_query(self, term, num=50, page=1, country="us", lang="nl", timeout=2, header={
+                                                                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
+                                                                    }):
 		"""
 		Retrieve suggested app IDs for search query
 
@@ -37,6 +39,8 @@ class AppStoreScraper:
 		:param str country:  Two-letter country code of store to search in,
 		                     default 'nl'
 		:param str lang:  Language code to search with, default 'nl'
+		:param int timeout:  Timeout in seconds for the request, default 2
+		:param str header:  Header to use for the request, default 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko)'
 
 		:return list:  List of App IDs returned for search query
 		"""
@@ -55,7 +59,7 @@ class AppStoreScraper:
 		}
 
 		try:
-			result = requests.get(url, headers=headers).json()
+			result = requests.get(url, headers=headers, timeout=timeout).json()
 		except ConnectionError as ce:
 			raise AppStoreException("Cannot connect to store: {0}".format(str(ce)))
 		except json.JSONDecodeError:
@@ -63,7 +67,7 @@ class AppStoreScraper:
 
 		return [app["id"] for app in result["bubbles"][0]["results"][:amount]]
 
-	def get_app_ids_for_collection(self, collection="", category="", num=50, country="nl", lang=""):
+	def get_app_ids_for_collection(self, collection="", category="", num=50, country="us", lang=""):
 		"""
 		Retrieve app IDs in given App Store collection
 
@@ -94,7 +98,7 @@ class AppStoreScraper:
 
 		return [entry["id"]["attributes"]["im:id"] for entry in result["feed"]["entry"]]
 
-	def get_app_ids_for_developer(self, developer_id, country="nl", lang=""):
+	def get_app_ids_for_developer(self, developer_id, country="us", lang=""):
 		"""
 		Retrieve App IDs linked to given developer
 
@@ -118,7 +122,7 @@ class AppStoreScraper:
 			# probably an invalid developer ID
 			return []
 
-	def get_similar_app_ids_for_app(self, app_id, country="nl", lang="nl"):
+	def get_similar_app_ids_for_app(self, app_id, country="us", lang="nl"):
 		"""
 		Retrieve list of App IDs of apps similar to given app
 
@@ -156,7 +160,7 @@ class AppStoreScraper:
 
 		return ids
 
-	def get_app_details(self, app_id, country="nl", lang="", add_ratings=False, flatten=True, sleep=None, force=False):
+	def get_app_details(self, app_id, country="us", lang="", add_ratings=False, flatten=True, sleep=None, force=False):
 		"""
 		Get app details for given app ID
 
@@ -235,7 +239,7 @@ class AppStoreScraper:
 
 		return app
 
-	def get_multiple_app_details(self, app_ids, country="nl", lang="", add_ratings=False, sleep=1, force=False):
+	def get_multiple_app_details(self, app_ids, country="us", lang="", add_ratings=False, sleep=1, force=False):
 		"""
 		Get app details for a list of app IDs
 
@@ -258,7 +262,7 @@ class AppStoreScraper:
 				self._log_error(country, str(ase))
 				continue
 
-	def get_store_id_for_country(self, country):
+	def get_store_id_for_country(self, country='us'):
 		"""
 		Get store ID for country code
 
