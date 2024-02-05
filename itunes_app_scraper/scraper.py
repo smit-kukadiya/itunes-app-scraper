@@ -27,7 +27,9 @@ class AppStoreScraper:
 	can be found at https://github.com/facundoolano/app-store-scraper.
 	"""
 
-	def get_app_ids_for_query(self, term, num=50, page=1, country="us", lang="en"):
+	def get_app_ids_for_query(self, term, num=50, page=1, country="us", lang="nl", timeout=2, header={
+                                                                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
+                                                                    }):
 		"""
 		Retrieve suggested app IDs for search query
 
@@ -55,7 +57,7 @@ class AppStoreScraper:
 		}
 
 		try:
-			result = requests.get(url, headers=headers).json()
+			result = requests.get(url, headers=headers, timeout=timeout).json()
 		except ConnectionError as ce:
 			raise AppStoreException("Cannot connect to store: {0}".format(str(ce)))
 		except json.JSONDecodeError:
