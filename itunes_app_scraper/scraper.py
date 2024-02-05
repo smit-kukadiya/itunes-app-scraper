@@ -158,7 +158,7 @@ class AppStoreScraper:
 
 		return ids
 
-	def get_app_details(self, app_id, country="us", lang="", add_ratings=False, flatten=True, sleep=None, force=False):
+	def get_app_details(self, app_id, country="us", lang="", add_ratings=True, flatten=True, sleep=None, force=False):
 		"""
 		Get app details for given app ID
 
@@ -213,14 +213,6 @@ class AppStoreScraper:
 		except (KeyError, IndexError):
 			raise AppStoreException("No app found with ID %s" % app_id)
 
-		if add_ratings:
-			try:
-				ratings = self.get_app_ratings(app_id, countries=[country])
-				app['histogram'] = [value for key, value in ratings.items()]
-			except AppStoreException:
-				# Return some details
-				self._log_error(country, 'Unable to collect ratings for %s' % str(app_id))
-				app['histogram'] = None
 
 		# 'flatten' app response
 		# responses are at most two-dimensional (array within array), so simply
@@ -231,6 +223,15 @@ class AppStoreScraper:
 					app[field] = ",".join(app[field])
 				elif isinstance(app[field], dict):
 					app[field] = ", ".join(["%s star: %s" % (key, value) for key,value in app[field].items()])
+
+		if add_ratings:
+			try:
+				ratings = self.get_app_ratings(app_id, countries=[country])
+				app['histogram'] = [value for key, value in ratings.items()]
+			except AppStoreException:
+				# Return some details
+				self._log_error(country, 'Unable to collect ratings for %s' % str(app_id))
+				app['histogram'] = None
 
 		url = f"https://apps.apple.com/{country}/app/id{app_id}"
 		options = {
