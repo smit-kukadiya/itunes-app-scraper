@@ -27,7 +27,7 @@ class AppStoreScraper:
 	can be found at https://github.com/facundoolano/app-store-scraper.
 	"""
 
-	def get_app_ids_for_query(self, term, num=50, page=1, country="nl", lang="nl"):
+	def get_app_ids_for_query(self, term, num=50, page=1, country="us", lang="en"):
 		"""
 		Retrieve suggested app IDs for search query
 
@@ -35,8 +35,8 @@ class AppStoreScraper:
 		:param int num:  Amount of items to return per page, default 50
 		:param int page:  Amount of pages to return
 		:param str country:  Two-letter country code of store to search in,
-		                     default 'nl'
-		:param str lang:  Language code to search with, default 'nl'
+		                     default 'us'
+		:param str lang:  Language code to search with, default 'en'
 
 		:return list:  List of App IDs returned for search query
 		"""
@@ -63,7 +63,7 @@ class AppStoreScraper:
 
 		return [app["id"] for app in result["bubbles"][0]["results"][:amount]]
 
-	def get_app_ids_for_collection(self, collection="", category="", num=50, country="nl", lang=""):
+	def get_app_ids_for_collection(self, collection="", category="", num=50, country="us", lang=""):
 		"""
 		Retrieve app IDs in given App Store collection
 
@@ -75,7 +75,7 @@ class AppStoreScraper:
 		                      AppStoreCategories. Can be left empty. !!!DO NOT USE!!!
 		:param int num:  Amount of results to return. Defaults to 50.
 		:param str country:  Two-letter country code for the store to search in.
-		                     Defaults to 'nl'.
+		                     Defaults to 'us'.
 		:param str lang: Dummy argument for compatibility. Unused.
 
 		:return:  List of App IDs in collection.
@@ -94,13 +94,13 @@ class AppStoreScraper:
 
 		return [entry["id"]["attributes"]["im:id"] for entry in result["feed"]["entry"]]
 
-	def get_app_ids_for_developer(self, developer_id, country="nl", lang=""):
+	def get_app_ids_for_developer(self, developer_id, country="us", lang=""):
 		"""
 		Retrieve App IDs linked to given developer
 
 		:param int developer_id:  Developer ID
 		:param str country:  Two-letter country code for the store to search in.
-		                     Defaults to 'nl'.
+		                     Defaults to 'us'.
 		:param str lang: Dummy argument for compatibility. Unused.
 
 		:return list:  List of App IDs linked to developer
@@ -118,7 +118,7 @@ class AppStoreScraper:
 			# probably an invalid developer ID
 			return []
 
-	def get_similar_app_ids_for_app(self, app_id, country="nl", lang="nl"):
+	def get_similar_app_ids_for_app(self, app_id, country="us", lang="en"):
 		"""
 		Retrieve list of App IDs of apps similar to given app
 
@@ -128,8 +128,8 @@ class AppStoreScraper:
 
 		:param app_id:  App ID to find similar apps for
 		:param str country:  Two-letter country code for the store to search in.
-		                     Defaults to 'nl'.
-		:param str lang:  Language code to search with, default 'nl'
+		                     Defaults to 'us'.
+		:param str lang:  Language code to search with, default 'en'
 
 		:return list:  List of similar app IDs
 		"""
@@ -156,14 +156,14 @@ class AppStoreScraper:
 
 		return ids
 
-	def get_app_details(self, app_id, country="nl", lang="", add_ratings=False, flatten=True, sleep=None, force=False):
+	def get_app_details(self, app_id, country="us", lang="", add_ratings=False, flatten=True, sleep=None, force=False):
 		"""
 		Get app details for given app ID
 
 		:param app_id:  App ID to retrieve details for. Can be either the
 		                numerical trackID or the textual BundleID.
 		:param str country:  Two-letter country code for the store to search in.
-		                     Defaults to 'nl'.
+		                     Defaults to 'us'.
 		:param str lang: Dummy argument for compatibility. Unused.
 		:param bool flatten: The App Store response may by multi-dimensional.
 		                     This makes it hard to transform into e.g. a CSV,
@@ -213,12 +213,12 @@ class AppStoreScraper:
 
 		if add_ratings:
 			try:
-				ratings = self.get_app_ratings(app_id, countries=country)
-				app['user_ratings'] = ratings
+				ratings = self.get_app_ratings(app_id, countries=[country])
+				app['histogram'] = [value for key, value in ratings.items()]
 			except AppStoreException:
 				# Return some details
 				self._log_error(country, 'Unable to collect ratings for %s' % str(app_id))
-				app['user_ratings'] = 'Error; unable to collect ratings'
+				app['histogram'] = None
 
 		# 'flatten' app response
 		# responses are at most two-dimensional (array within array), so simply
@@ -230,18 +230,30 @@ class AppStoreScraper:
 				elif isinstance(app[field], dict):
 					app[field] = ", ".join(["%s star: %s" % (key, value) for key,value in app[field].items()])
 
-		app['title'] = app['trackCensoredName']
-		app['developer'] = app['sellerName']
+		url = f"https://apps.apple.com/{country}/app/id{app_id}"
+		options = {
+			'url': url,
+		}
+		response = requests.get(**options)
+		tree = html.fromstring(response.content)
+		summery = tree.xpath("//h2[@class='product-header__subtitle app-header__subtitle']/text()")[0].split("\n")[1].strip()
+		copyright = tree.xpath("//dd[@class='information-list__item__definition information-list__item__definition--copyright']/text()")[0]
+		iap = True if len(tree.xpath("//dt[normalize-space()='In-App Purchases']/text()")) > 0 else False
+		developer_website = tree.xpath("//a[@class='link']/@href")[0]
+		app['summery'] = summery
+		app['copyright'] = copyright
+		app['iap'] = iap
+		app['developer_website'] = developer_website
 
 		return app
 
-	def get_multiple_app_details(self, app_ids, country="nl", lang="", add_ratings=False, sleep=1, force=False):
+	def get_multiple_app_details(self, app_ids, country="us", lang="", add_ratings=False, sleep=1, force=False):
 		"""
 		Get app details for a list of app IDs
 
 		:param list app_id:  App IDs to retrieve details for
 		:param str country:  Two-letter country code for the store to search in.
-		                     Defaults to 'nl'.
+		                     Defaults to 'us'.
 		:param str lang: Dummy argument for compatibility. Unused.
 		:param int sleep: Seconds to sleep before request to prevent being
 						  temporary blocked if there are many requests in a
@@ -258,13 +270,13 @@ class AppStoreScraper:
 				self._log_error(country, str(ase))
 				continue
 
-	def get_store_id_for_country(self, country):
+	def get_store_id_for_country(self, country="us"):
 		"""
 		Get store ID for country code
 
 		:param str country:  Two-letter country code
 		:param str country:  Two-letter country code for the store to search in.
-		                     Defaults to 'nl'.
+		                     Defaults to 'us'.
 		"""
 		country = country.upper()
 
