@@ -239,14 +239,14 @@ class AppStoreScraper:
 		}
 		response = requests.get(**options)
 		tree = html.fromstring(response.content)
-		summery = tree.xpath("//h2[@class='product-header__subtitle app-header__subtitle']/text()")[0].split("\n")[1].strip()
+		summary = tree.xpath("//h2[@class='product-header__subtitle app-header__subtitle']/text()")[0].split("\n")[1].strip()
 		copyright = tree.xpath("//dd[@class='information-list__item__definition information-list__item__definition--copyright']/text()")[0]
 		iap = True if len(tree.xpath("//dt[normalize-space()='In-App Purchases']/text()")) > 0 else False
-		developer_website = tree.xpath("//a[@class='link']/@href")[0]
-		app['summery'] = summery
+		developer_website = tree.xpath("//a[@class='link']/@href")[0] ## require to modify
+		app['summary'] = summary
 		app['copyright'] = copyright
 		app['offersIAP'] = iap
-		app['developerWebsite'] = developer_website
+		# app['developerWebsite'] = developer_website
 
 		return app
 
