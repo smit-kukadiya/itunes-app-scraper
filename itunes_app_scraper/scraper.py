@@ -245,8 +245,8 @@ class AppStoreScraper:
 		developer_website = tree.xpath("//a[@class='link']/@href")[0]
 		app['summery'] = summery
 		app['copyright'] = copyright
-		app['iap'] = iap
-		app['developer_website'] = developer_website
+		app['offersIAP'] = iap
+		app['developerWebsite'] = developer_website
 
 		return app
 
