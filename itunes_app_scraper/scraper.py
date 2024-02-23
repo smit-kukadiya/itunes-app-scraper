@@ -233,19 +233,19 @@ class AppStoreScraper:
 				self._log_error(country, 'Unable to collect ratings for %s' % str(app_id))
 				app['histogram'] = None
 
-		url = f"https://apps.apple.com/{country}/app/id{app_id}"
-		options = {
-			'url': url,
-		}
-		response = requests.get(**options)
-		tree = html.fromstring(response.content)
-		summary = tree.xpath("//h2[@class='product-header__subtitle app-header__subtitle']/text()")[0].split("\n")[1].strip()
-		copyright = tree.xpath("//dd[@class='information-list__item__definition information-list__item__definition--copyright']/text()")[0]
-		iap = True if len(tree.xpath("//dt[normalize-space()='In-App Purchases']/text()")) > 0 else False
-		developer_website = tree.xpath("//a[@class='link']/@href")[0] ## require to modify
-		app['summary'] = summary
-		app['copyright'] = copyright
-		app['offersIAP'] = iap
+		# url = f"https://apps.apple.com/{country}/app/id{app_id}"
+		# options = {
+		# 	'url': url,
+		# }
+		# response = requests.get(**options)
+		# tree = html.fromstring(response.content)
+		# summary = tree.xpath("//h2[@class='product-header__subtitle app-header__subtitle']/text()")[0].split("\n")[1].strip()
+		# copyright = tree.xpath("//dd[@class='information-list__item__definition information-list__item__definition--copyright']/text()")[0]
+		# iap = True if len(tree.xpath("//dt[normalize-space()='In-App Purchases']/text()")) > 0 else False
+		# developer_website = tree.xpath("//a[@class='link']/@href")[0] ## require to modify
+		# app['summary'] = summary
+		# app['copyright'] = copyright
+		# app['offersIAP'] = iap
 		# app['developerWebsite'] = developer_website
 
 		return app
