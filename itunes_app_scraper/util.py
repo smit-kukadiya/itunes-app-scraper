@@ -257,7 +257,7 @@ class AppStoreException(Exception):
 
 
 COUNTRIES = [
-    'ad', # Andorra
+    # 'ad', # Andorra
     'at', # Austria
     'be', # Belgium
     'ca', # Canada
@@ -271,24 +271,24 @@ COUNTRIES = [
     'fi', # Finland
     'fr', # France
     'gb', # Great Britain
-    'gi', # Gibraltar
+    # 'gi', # Gibraltar
     'gr', # Greece
     'hr', # Hungary
     'ie', # Ireland
-    'im', # Isle of Man
+    # 'im', # Isle of Man
     'is', # Iceland
     'it', # Italy
     'lu', # Luxembourg
     'lv', # Latvia
-    'mc', # Monaco
-    'me', # Montenegro
+    # 'mc', # Monaco
+    # 'me', # Montenegro
     'mt', # Malta
     'nl', # Netherlands
     'no', # Norway
     'pl', # Poland
     'pt', # Portugal
     'ro', # Romania
-    'rs', # Serbia
+    # 'rs', # Serbia
     'se', # Sweden
     'si', # Slovenia
     'sk', # Slovakia
